@@ -1,0 +1,24 @@
+<?php
+
+namespace App\Http\Controllers\Dashboard;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class PemetaanController extends Controller
+{
+    public function index()
+    {
+        $user = Auth::user(); // Atau menggunakan auth()->user();
+        // Return the view for the dashboard
+        return view('dashboard.peta', compact('user'));
+    }
+
+    public function pemetaan()
+    {
+        $user = Auth::user(); // Atau menggunakan auth()->user();
+        // Return the view for the dashboard
+        return view('dashboard.pemetaan', compact('user'));
+    }
+}

@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" sizes="32x32" href="../assets/images/favicon.png" type="image/x-icon">
+
+    <title>Sistem Pemantauan Lahan Sawah</title>
+
+    <!-- BOOTSTRAP CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+
+    <!-- Leaflet JS CDN -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+        integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
+
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+        integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+
+    <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
+    <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css'
+        rel='stylesheet' />
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@v0.74.0/dist/L.Control.Locate.min.css" />
+
+
+    <style>
+        */
+    </style>
+
+</head>
+
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img class="img" src="../assets/images/logo-font-white.png" alt="">
+            </a>
+            <a class="login_button" href="#">Login</a>
+        </div>
+    </nav>
+    <!-- NAVBAR END -->
+
+    <!-- MAIN CONTENT -->
+    <div class="container bordered-container center-content">
+        <div class="row center-content">
+            <div class="col center-content">
+                <div class="content center-content">
+                    <!-- JUDUL -->
+                    <div class="head">
+                        <h1 class="title"><b>Sistem Pemantauan Lahan Sawah</b></h1>
+                    </div>
+
+                    <div class="section">
+                        <p class="description text-indent">
+                            <b>SIPALAH</b><i> (Sistem Pemantauan Lahan Sawah)</i> merupakan sebuah platform berbasis web
+                            yang dirancang untuk membantu pemangku kepentingan dalam mengawasi dan memantau lahan
+                            pertanian secara efisien.
+                        </p>
+
+                        <p class="description text-indent">Platform ini merupakan sarana bagi masyarakat untuk
+                            berpartisipasi aktif melakukan pengendalian alih fungsi lahan dari pertanian ke
+                            non-pertanian.
+
+                            Informasi yang dikumpulkan akan menjadi masukan bagi instansi terkait dalam rangka mengambil
+                            kebijakan mengenai pemanfaatan lahan pertanian di wilayah Kapanewon Kasihan.</p>
+                    </div>
+                    <!-- END JUDUL -->
+
+                    <!-- FORM -->
+                    <form action="#" method="" class="needs-validation" enctype="multipart/form-data" novalidate>
+                        <!-- <input type="hidden" name="_token" value="6DsDrqw0kNuWlIGGv8JSY0HkfoFWjOQc13vevjLA"> -->
+
+                        <div class="section">
+                            <h2 class="attribute required">Bentuk Perubahan Lahan</h2>
+                            <p class="description">Silahkan pilih jenis perubahan yang terjadi pada lokasi lahan
+                                pertanian:</p>
+
+                            <input type="radio" id="radioInput1" class="radio" name="jenis_perubahan"
+                                value="Pertanian menjadi Bangunan">
+                            <div class="radio">
+                                <label class="radiolabel" for="radioInput1">Pertanian Menjadi Bangunan</label>
+                            </div>
+
+                            <input type="radio" id="radioInput2" class="radio" name="jenis_perubahan"
+                                value="Pertanian ditimbun pondasi">
+                            <div class="radio">
+                                <label class="radiolabel" for="radioInput2">Pertanian Ditimbun Pondasi</label>
+                            </div>
+
+                            <input type="radio" id="radioInput3" class="radio" name="jenis_perubahan"
+                                value="Lainnya sebutkan...">
+                            <div class="radio">
+                                <label class="radiolabel" for="radioInput3">Perubahan Lainnya...</label>
+                            </div>
+                            <div id="lainnyaInput" style="display: none;">
+                                <input type="text" id="lainnyaText" name="jenis_perubahan_lainnya"
+                                    class="input inputText" placeholder="Sebutkan perubahan lainnya" value="">
+                            </div>
+
+
+                        </div>
+
+                        <!-- BAGIAN PETA -->
+                        <div class="section">
+                            <h2 class="attribute required">Koordinat Lokasi Lahan yang Beralihfungsi</h2>
+                            <p class="description">Klik pada peta icon lokasi alih fungsi lahan
+                                pertanian. Hidupkan
+                                <i>"GPS Location"</i>
+                            </p>
+                            <p class="description">Keterangan Peta:</p>
+                            <ol class="description">
+                                <li>Kuning (Kawasan Wilayah Kapanewon Kasihan)</li>
+                                <li>Hijau (Kawasan Lahan Pertanian Persawah)</li>
+                            </ol>
+                            <div class="map-container" id="mapContainer">
+                                <p class="description">Peta Lahan Pertanian</p>
+                                <div id="map"></div>
+                                <script
+                                    src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.74.0/dist/L.Control.Locate.min.js"
+                                    charset="utf-8"></script>
+                                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+                                <script>
+                                    var map = L.map('map').setView([-7.6713, 110.358], 11); // Koordinat dan zoom level;
+                                    map.invalidateSize();
+
+                                    var peta1 = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                    }).addTo(map); //streetmap
+
+                                    var peta2 = L.tileLayer('http://{s}.google.com/vt?lyrs=s&x={x}&y={y}&z={z}', {
+                                        maxZoom: 20,
+                                        subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+                                    }); //satelite
+
+                                    var peta3 = L.tileLayer('http://{s}.google.com/vt?lyrs=s,h&x={x}&y={y}&z={z}', {
+                                        maxZoom: 20,
+                                        subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+                                    });  // Hybrid
+
+
+                                    // Fungsi popup untuk setiap fitur
+                                    function popUp(feature, layer) {
+                                        // Konten popup default
+                                        var popupContent = "<div style='text-align: center;'><h6>Keterangan</h6></div>";
+
+                                        // Cek properti "jenis_lahan" untuk menentukan konten popup yang akan ditampilkan
+                                        if (feature.properties) {
+                                            if (feature.properties.layer === "SAWAH") {
+                                                popupContent +=
+                                                    "<table style='width:100%; text-align:left;'>" +
+                                                    "<tr><td><strong>Kategori</strong></td><td>: " + (feature.properties.kategori || "Tidak tersedia") + "</td></tr>" +
+                                                    "<tr><td><strong>Jenis</strong></td><td>: " + (feature.properties.jenis || "Tidak tersedia") + "</td></tr>" +
+                                                    "<tr><td><strong>Luas</strong></td><td>: " + (feature.properties.luas_ha || "Tidak tersedia") + " ha</td></tr>" +
+                                                    "</table>";
+                                            } else {
+                                                // Jika bukan "sawah", tampilkan properti lainnya
+                                                popupContent +=
+                                                    "<table style='width:100%; text-align:left;'>" +
+                                                    "<tr><td><strong>Kecamatan</strong></td><td>: " + (feature.properties.kecamatan || "Tidak tersedia") + "</td></tr>" +
+                                                    "<tr><td><strong>Desa</strong></td><td>: " + (feature.properties.desa || "Tidak tersedia") + "</td></tr>" +
+                                                    "</table>";
+
+                                            }
+
+                                            // Tambahkan konten popup ke layer
+                                            layer.bindPopup(popupContent);
+                                        }
+                                    }
+
+                                    // Membuat lapisan GeoJSON dengan batas administratif
+                                    var batasLayer;
+                                    $.getJSON("../assets/json/jsonall.geojson", function (data) {
+                                        // Inisialisasi lapisan GeoJSON dan simpan ke dalam variabel
+                                        batasLayer = new L.geoJSON(data, {
+                                            onEachFeature: popUp, // Fungsi popUp untuk menambahkan popup pada setiap fitur (optional)
+                                            style: function (feature) {
+                                                // Menentukan warna berdasarkan properti jenis_lahan
+                                                var color, fillColor, fillOpacity;
+                                                if (feature.properties && feature.properties.layer === "SAWAH") {
+                                                    color = 'darkgreen'; // Warna garis batas untuk sawah
+                                                    fillColor = 'lightgreen'; // Warna isi poligon untuk sawah
+                                                    fillOpacity = 0.9; // Keburaman warna isi poligon sawah (tidak transparan)
+                                                } else {
+                                                    color = feature.properties.color || 'black'; // Warna garis batas default untuk non-sawah
+                                                    fillColor = 'yellow'; // Warna isi poligon default untuk non-sawah
+                                                    fillOpacity = 0.3; // Keburaman warna isi poligon non-sawah (transparan 30%)
+                                                }
+                                                return {
+                                                    color: color,         // Warna garis batas
+                                                    weight: 1,            // Tebal garis batas
+                                                    opacity: 1,           // Keburaman garis batas
+                                                    fillColor: fillColor, // Warna isi poligon
+                                                    fillOpacity: fillOpacity // Keburaman warna isi poligon
+                                                };
+                                            }
+                                        }).addTo(map); // Menambahkan layer batasLayer langsung ke peta;
+
+                                        // Fokuskan peta ke batas administratif GeoJSON
+                                        map.fitBounds(batasLayer.getBounds());
+
+                                        // Basemap layers - hanya satu yang bisa dipilih
+                                        var baseMaps = {
+                                            "Streets": peta1,
+                                            "Satellite": peta2,
+                                            "Hybrid": peta3,
+
+                                        };
+
+                                        // Overlay layers - bisa dipilih bersamaan dengan basemap
+                                        var overlayMaps = {
+                                            "Batas Administratif": batasLayer
+                                        };
+
+                                        // Menambahkan kontrol layer ke peta, memisahkan antara basemap dan overlay
+                                        L.control.layers(baseMaps, overlayMaps).addTo(map);
+                                    });
+
+
+                                    // Cari Lokasi 
+                                    var locateControl = L.control.locate({
+                                        // position: 'bottomright', // Posisi kontrol locate di kanan bawah
+                                        // setView: 'once', // Mengatur view peta sekali ke lokasi pengguna
+                                        // keepCurrentZoomLevel: true, // Menjaga tingkat zoom saat ini
+                                        // flyTo: true, // Menggunakan animasi flyTo saat menemukan lokasi pengguna
+                                        position: 'topleft', // Atur posisi tombol "My Location"
+                                        drawCircle: true, // Gambar lingkaran akurasi
+                                        follow: true, // Aktifkan mode "follow" ketika lokasi ditemukan
+                                        setView: true, // Setel tampilan peta ke lokasi yang ditemukan
+                                        keepCurrentZoomLevel: false, // Biarkan zoom level tetap
+                                        flyTo: true,
+                                        markerStyle: {
+                                            weight: 2,
+                                            fillColor: 'blue',
+                                            color: 'blue',
+                                            opacity: 0.7,
+                                            fillOpacity: 0.7
+                                        },
+                                        icon: 'fa fa-map-marker', // Ikona tombol "My Location"
+                                        iconLoading: 'fa fa-spinner fa-spin', // Ikona yang ditampilkan saat mencari lokasi
+                                        circleStyle: {
+                                            fillColor: '#8e9aaf',
+                                            fillOpacity: 0.2,
+                                            stroke: false,
+                                            clickable: false
+                                        },
+                                        metric: false, // Menampilkan satuan metrik
+                                        strings: {
+                                            title: "Show me where I am", // Label tombol "My Location"
+                                            popup: "You are within {distance} {unit} from this point", // Popup yang muncul saat lokasi ditemukan
+                                            outsideMapBoundsMsg: "You seem to be located outside the boundaries of the map" // Pesan jika lokasi diluar batas peta
+                                        },
+
+                                        locateOptions: {
+                                            enableHighAccuracy: true // Menggunakan akurasi tinggi
+                                        }
+                                    }).addTo(map);
+
+                                    // Event yang terjadi ketika lokasi ditemukan
+                                    map.on('locationfound', function (e) {
+                                        // Ambil latitude dan longitude dari objek e
+                                        var lat = e.latitude;
+                                        var lng = e.longitude;
+
+                                        // Masukkan latitude dan longitude ke dalam input type text
+                                        document.getElementById('latitude').value = lat;
+                                        document.getElementById('longitude').value = lng;
+                                    });
+
+                                    // Event yang terjadi jika mencari lokasi gagal
+                                    map.on('locationerror', function (e) {
+                                        alert("Failed to locate your position: " + e.message);
+                                    });
+
+                                    var customMarker; // Variabel untuk menyimpan marker yang dapat digeser
+
+                                    // Event yang terjadi ketika lokasi ditemukan
+                                    map.on('locationfound', function (e) {
+                                        // Ambil latitude dan longitude dari objek e
+                                        var lat = e.latitude;
+                                        var lng = e.longitude;
+
+                                        // Masukkan latitude dan longitude ke dalam input type text
+                                        document.getElementById('latitude').value = lat;
+                                        document.getElementById('longitude').value = lng;
+
+                                        // Hapus marker yang ada jika sudah ada
+                                        if (customMarker) {
+                                            map.removeLayer(customMarker);
+                                        }
+
+                                        // Buat marker yang dapat digeser dan tambahkan ke peta
+                                        customMarker = L.marker([lat, lng], {
+                                            draggable: true // Aktifkan fitur drag-and-drop
+                                        }).addTo(map);
+
+                                        // Event yang terjadi saat marker digeser
+                                        customMarker.on('dragend', function (event) {
+                                            var marker = event.target;
+                                            var position = marker.getLatLng();
+
+                                            // Ambil latitude dan longitude dari marker yang digeser
+                                            var lat = position.lat;
+                                            var lng = position.lng;
+
+                                            // Masukkan latitude dan longitude ke dalam input type text
+                                            document.getElementById('latitude').value = lat;
+                                            document.getElementById('longitude').value = lng;
+                                        });
+
+                                        // Posisikan peta ke lokasi yang baru ditemukan
+                                        map.setView([lat, lng], 14);
+                                    })
+                                </script>
+
+                                <input type="text" id="latitude" name="latitude" placeholder="Latitude" readonly>
+                                <input type="text" id="longitude" name="longitude" placeholder="Longitude" readonly>
+
+                            </div>
+                        </div>
+                        <!-- PETA END  -->
+
+                        <div class="section">
+                            <h2 class="attribute required">Foto Lahan yang Mengalami Alih Fungsi</h2>
+                            <p class="description">Silahkan masukan foto yang menampilkan perubahan yang terjadi pada
+                                lahan
+                                pertanian tersebut. Silahkan masukkan foto minimal 1 dan maksimal 3 foto yang diambil
+                                melalui
+                                gallery penyimpanan.</p>
+                            <div class="photoContainer" id="photoContainer"></div>
+                            <div class="boxphoto">
+                                <label class="labelFile" for="foto">Pilih file foto.</label>
+                            </div>
+                            <input class="file" type="file" name="foto[]" id="foto" accept="image/*" multiple>
+
+                            <!-- Tampilan thumbnail foto -->
+                            <div id="thumbnail-container"></div>
+
+                            <!-- Tampilan nama file -->
+                            <div id="file-name-container"></div>
+                        </div>
+
+                        <div class="section">
+                            <h2 class="attribute">Keterangan Tambahan</h2>
+                            <label class="keterangan" for="keterangan">Silahkan isi jika terdapat informasi lain yang
+                                ingin disampaikan.</label>
+                            <textarea name="keterangan" id="keterangan" cols="40" rows="10" wrap="hard"
+                                placeholder="Tempat menuliskan informasi tambahan... " value=""></textarea>
+                        </div>
+                        <div class="section">
+                            <h2 class="attribute">Identitas Pelapor</h2>
+                            <p class="description">Identitas Anda digunakan untuk melengkapi laporan, dan Anda hanya
+                                akan dihubungi
+                                jika ada hal yang perlu dikonfirmasi atau ditindaklanjuti.</p>
+
+                        </div>
+                        <div class="section section-identitas">
+                            <label class="keterangan required" for="nama">Nama Pelapor</label>
+                            <input class="input" type="text" name="nama" id="nama" placeholder="Nama Anda..." value=""
+                                required>
+                            <label class="keterangan required" for="noHp">Nomor yang dapat dihubungi</label>
+                            <input class="input" type="tel" name="nomor" id="noHp"
+                                pattern="^(\+62|62|0)8[1-9][0-9]{6,9}$" placeholder="08xxxxxxx" value="" required>
+                            <label class="keterangan required" for="alamat">Alamat:</label>
+                            <input class="input" type="text" name="alamat" id="alamat" placeholder="Kalurahan, Dusun"
+                                value="" required></input>
+                            <label class="keterangan required" for="alamat">Email:</label>
+                            <input class="input" type="text" name="email" id="alamat" placeholder="Email valid" value=""
+                                required>
+                            <br><br>
+                        </div>
+
+                        <input class="input" type="text" name="status" id="status" placeholder="Status"
+                            style="display: none">
+
+                        <div class="section">
+                            <input class="submit" type="button" value="Kirim Laporan">
+                        </div>
+                    </form>
+                    <!-- END FORM -->
+
+                    <!-- FOOTER -->
+                    <div class="footer">
+                        <img src="../assets/images/logo-kab-bantul.png" alt="">
+                        <h6 style="margin-top: 8px;"> BPP Kapanewon Kasihan</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END CONTENT -->
+
+
+    <!-- SCRIPT JS -->
+    <!-- SCRIPT BOOTSTRAP -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+        </script>
+
+    <script>
+        function showInformanForm() {
+            var checkbox = document.getElementById("checkboxID");
+            var sectionIdentitas = document.querySelector(".section-identitas");
+
+            if (checkbox.checked) {
+                sectionIdentitas.style.display = "block";
+                enableInputs(sectionIdentitas);
+            } else {
+                sectionIdentitas.style.display = "none";
+                disableInputs(sectionIdentitas);
+            }
+        }
+
+        function enableInputs(parentElement) {
+            var inputs = parentElement.querySelectorAll(".input");
+            for (var i = 0; i < inputs.length; i++) {
+                inputs[i].disabled = false;
+            }
+        }
+
+        function disableInputs(parentElement) {
+            var inputs = parentElement.querySelectorAll(".input");
+            for (var i = 0; i < inputs.length; i++) {
+                inputs[i].disabled = true;
+            }
+        }
+    </script>
+
+    <script>
+        var radioInput1 = document.getElementById("radioInput1");
+        var radioInput2 = document.getElementById("radioInput2");
+        var radioInput3 = document.getElementById("radioInput3");
+        var lainnyaInput = document.getElementById("lainnyaInput");
+
+        radioInput1.addEventListener("change", toggleInput);
+        radioInput2.addEventListener("change", toggleInput);
+        radioInput3.addEventListener("change", toggleInput);
+
+        function toggleInput() {
+            if (radioInput3.checked) {
+                lainnyaInput.style.display = "block";
+            } else {
+                lainnyaInput.style.display = "none";
+            }
+        }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const fotoInput = document.getElementById('foto');
+            const thumbnailContainer = document.getElementById('thumbnail-container');
+            const fileNameContainer = document.getElementById('file-name-container');
+
+            fotoInput.addEventListener('change', function () {
+                thumbnailContainer.innerHTML = ''; // Bersihkan kontainer thumbnail saat pemilihan ulang
+                fileNameContainer.innerHTML = ''; // Bersihkan kontainer nama file saat pemilihan ulang
+
+                for (let i = 0; i < fotoInput.files.length; i++) {
+                    const file = fotoInput.files[i];
+
+                    // Tampilkan thumbnail
+                    const thumbnail = document.createElement('img');
+                    thumbnail.src = URL.createObjectURL(file);
+                    thumbnail.style.margin = '10px 0px 0 30px'; // Gap antar thumbnail
+                    thumbnail.style.maxWidth = '100px'; // Sesuaikan ukuran sesuai kebutuhan
+                    thumbnail.style.maxHeight = '100px'; // Sesuaikan ukuran sesuai kebutuhan
+                    thumbnailContainer.appendChild(thumbnail);
+
+                    // Tampilkan nama file
+                    const fileName = document.createElement('p');
+                    fileName.textContent = file.name;
+                    fileNameContainer.appendChild(fileName);
+                }
+            });
+        });
+    </script>
+
+    <script>
+        let lastScrollTop = 0;
+        const navbar = document.getElementsByClassName("navbar")[0]; // Access the first element with the class 'navbar'
+
+        window.addEventListener("scroll", function () {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            if (scrollTop > lastScrollTop) {
+                // Scroll down - hide navbar
+                navbar.style.top = "-100px"; // Adjust this value based on your navbar's height
+            } else if (scrollTop === 0) {
+                // Scroll to top - show navbar
+                navbar.style.top = "0";
+            }
+
+            lastScrollTop = scrollTop;
+        });
+    </script>
+
+</body>
+
+</html>
